@@ -8,12 +8,12 @@ class VotingPage extends StatefulWidget {
 }
 
 class _VotingPageState extends State<VotingPage> {
-  int _selectedCandidate = -1; 
+  int _selectedCandidate = -1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE8F0FA), 
+      backgroundColor: const Color(0xFFE8F0FA),
       appBar: AppBar(
         backgroundColor: const Color(0xFF001A6E),
         title: const Text(
@@ -31,7 +31,7 @@ class _VotingPageState extends State<VotingPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.builder(
-          itemCount: 2, 
+          itemCount: 2,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 32.0),
@@ -39,7 +39,7 @@ class _VotingPageState extends State<VotingPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    '${index + 1}', 
+                    '${index + 1}', // Nomor urut kandidat
                     style: const TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
@@ -61,7 +61,7 @@ class _VotingPageState extends State<VotingPage> {
                       Positioned(
                         top: 20,
                         child: Image.asset(
-                          'assets/Calon.png', 
+                          'assets/Calon.png', // Path gambar kandidat
                           width: 200,
                           height: 160,
                         ),
@@ -72,8 +72,19 @@ class _VotingPageState extends State<VotingPage> {
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _selectedCandidate = index; 
+                        _selectedCandidate = index; // Set kandidat yang dipilih
                       });
+                      // Menampilkan SnackBar untuk notifikasi "Voting Berhasil"
+                    ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                    'Voting berhasil untuk kandidat ${index + 1}', // String dinamis diperbolehkan
+                    style: const TextStyle(color: Colors.white),
+                    ),
+                  backgroundColor: Colors.green,
+                  duration: const Duration(seconds: 2),
+                      ),
+                    );
                       print('Voted for candidate ${index + 1}');
                     },
                     style: ElevatedButton.styleFrom(
@@ -97,11 +108,11 @@ class _VotingPageState extends State<VotingPage> {
                   ),
                   const SizedBox(height: 8),
                   RadioListTile<int>(
-                    value: index, 
-                    groupValue: _selectedCandidate, 
+                    value: index,
+                    groupValue: _selectedCandidate,
                     onChanged: (value) {
                       setState(() {
-                        _selectedCandidate = value!; 
+                        _selectedCandidate = value!;
                       });
                       print('Selected candidate ${index + 1}');
                     },
