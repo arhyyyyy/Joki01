@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'login.dart';
 
@@ -13,12 +14,27 @@ class _RegistrationScreenState extends State<RegistrationPage> {
   final TextEditingController _nikController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();  // Changed
+  final TextEditingController _addressController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _dobController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +68,7 @@ class _RegistrationScreenState extends State<RegistrationPage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LoginPage(),
+                          builder: (context) => const LoginPage(),
                         ),
                       );
                     },
@@ -82,32 +98,39 @@ class _RegistrationScreenState extends State<RegistrationPage> {
                   TextField(
                     controller: _nikController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       hintText: 'NIK',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
-                       fillColor: Color(0xFF001A6E),
+                      fillColor: const Color(0xFF001A6E),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: screenHeight * 0.02),
-                  // Input Tanggal Lahir
+                  // Input Tanggal Lahir dengan DatePicker
                   TextField(
                     controller: _dobController,
-                    keyboardType: TextInputType.datetime,
+                    readOnly: true,
                     decoration: InputDecoration(
                       hintText: 'dd/mm/yyyy',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Color(0xFF001A6E),
+                      fillColor: const Color(0xFF001A6E),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.calendar_today, color: Colors.grey),
+                        onPressed: () => _selectDate(context),
+                      ),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: screenHeight * 0.02),
                   // Input Nama Lengkap
@@ -115,45 +138,49 @@ class _RegistrationScreenState extends State<RegistrationPage> {
                     controller: _fullNameController,
                     decoration: InputDecoration(
                       hintText: 'Nama Lengkap',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
-                       fillColor: Color(0xFF001A6E),
+                      fillColor: const Color(0xFF001A6E),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: screenHeight * 0.02),
-                  // Input Alamat Lengkap (Replaced username with address)
+                  // Input Alamat Lengkap
                   TextField(
-                    controller: _addressController,  // Changed
+                    controller: _addressController,
                     decoration: InputDecoration(
-                      hintText: 'Alamat Lengkap',  // Changed
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintText: 'Alamat Lengkap',
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
-                       fillColor: Color(0xFF001A6E),
+                      fillColor: const Color(0xFF001A6E),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: screenHeight * 0.02),
                   // Input Nomor Telepon
                   TextField(
                     controller: _phoneNumberController,
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       hintText: 'Nomor Telepon',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Color(0xFF001A6E),
+                      fillColor: const Color(0xFF001A6E),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: screenHeight * 0.02),
                   // Input Kata Sandi
@@ -162,13 +189,13 @@ class _RegistrationScreenState extends State<RegistrationPage> {
                     obscureText: !_passwordVisible,
                     decoration: InputDecoration(
                       hintText: 'Kata Sandi',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
-                       fillColor: Color(0xFF001A6E),
+                      fillColor: const Color(0xFF001A6E),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _passwordVisible ? Icons.visibility : Icons.visibility_off,
@@ -181,6 +208,7 @@ class _RegistrationScreenState extends State<RegistrationPage> {
                         },
                       ),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: screenHeight * 0.02),
                   // Input Konfirmasi Kata Sandi
@@ -189,13 +217,13 @@ class _RegistrationScreenState extends State<RegistrationPage> {
                     obscureText: !_confirmPasswordVisible,
                     decoration: InputDecoration(
                       hintText: 'Konfirmasi Kata Sandi',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
-                       fillColor: Color(0xFF001A6E),
+                      fillColor: const Color(0xFF001A6E),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -208,6 +236,7 @@ class _RegistrationScreenState extends State<RegistrationPage> {
                         },
                       ),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: screenHeight * 0.03),
                   // Tombol "Daftar"
@@ -224,7 +253,7 @@ class _RegistrationScreenState extends State<RegistrationPage> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:  Color(0xFF001A6E),
+                      backgroundColor: const Color(0xFF001A6E),
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pungutsuara/admin/edit_data_kandidat.dart';
-import 'package:pungutsuara/admin/tambah_data_kandidat.dart';
+import 'edit_data_kandidat.dart';
+import 'tambah_data_kandidat.dart';
 
 class KelolaKandidatPage extends StatefulWidget {
   const KelolaKandidatPage({super.key});
@@ -22,6 +22,27 @@ class _KelolaKandidatPageState extends State<KelolaKandidatPage> {
     },
   );
 
+  // Menambah data kandidat
+  void _tambahKandidat(Map<String, String> kandidat) {
+    setState(() {
+      kandidatData.add(kandidat);
+    });
+  }
+
+  // Mengupdate data kandidat
+  void _updateKandidat(int index, Map<String, String> updatedData) {
+    setState(() {
+      kandidatData[index] = updatedData;
+    });
+  }
+
+  // Menghapus kandidat
+  void _deleteKandidat(int index) {
+    setState(() {
+      kandidatData.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,40 +63,36 @@ class _KelolaKandidatPageState extends State<KelolaKandidatPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                child: Column(
+        child: Column(
           children: [
             const SizedBox(height: 20),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'DATA',
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF001A6E),
-                  ),
-                ),
-                const SizedBox(height: 5), 
-                Text(
-                  'KANDIDAT',
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF001A6E),
-                  ),
-                ),
-                const SizedBox(height: 55),
-              ],
+            Text(
+              'DATA',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF001A6E),
+              ),
             ),
-            const SizedBox(height: 20),
+            Text(
+              'KANDIDAT',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF001A6E),
+              ),
+            ),
+            const SizedBox(height: 40),
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
                   columnSpacing: 20,
-                  headingRowColor: WidgetStateProperty.resolveWith(
-                      (states) => const Color(0xFF001A6E)),
+                  headingRowColor: MaterialStateProperty.resolveWith(
+                    (states) => const Color(0xFF001A6E),
+                  ),
                   headingTextStyle: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -96,48 +113,50 @@ class _KelolaKandidatPageState extends State<KelolaKandidatPage> {
                       DataCell(Text(kandidatData[index]['namaPartai']!)),
                       DataCell(Text(kandidatData[index]['visiMisi']!)),
                       DataCell(
-                        Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditDataKandidat(
-                                          index: index + 1),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditDataKandidat(
+                                      index: index,
+                                      kandidatData: kandidatData[index],
+                                      onUpdate: (updatedIndex, updatedData) {
+                                        _updateKandidat(updatedIndex, updatedData);
+                                      },
                                     ),
-                                  );
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
-                                  child: Text(
-                                    'Edit',
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  _showDeleteConfirmationDialog(context, index);
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
-                                  child: Text(
-                                    'Hapus',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                _showDeleteConfirmationDialog(context, index);
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: Text(
+                                  'Hapus',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ]);
@@ -146,21 +165,16 @@ class _KelolaKandidatPageState extends State<KelolaKandidatPage> {
               ),
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ActionButton(
-                  text: 'Tambah',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TambahDataKandidat(),
-                      ),
-                    );
-                  },
-                ),
-              ],
+            ActionButton(
+              text: 'Tambah',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TambahDataKandidat(onAddKandidat: _tambahKandidat),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 20),
           ],
@@ -175,21 +189,18 @@ class _KelolaKandidatPageState extends State<KelolaKandidatPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Konfirmasi Hapus'),
-          content: Text('Apakah Anda yakin ingin menghapus kandidat ini?'),
+          content: const Text('Apakah Anda yakin ingin menghapus kandidat ini?'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Tutup dialog
+                Navigator.of(context).pop();
               },
               child: const Text('Batal'),
             ),
             TextButton(
               onPressed: () {
-                // Hapus kandidat dari daftar
-                setState(() {
-                  kandidatData.removeAt(index); // Menghapus data dari list
-                });
-                Navigator.of(context).pop(); // Tutup dialog
+                _deleteKandidat(index);
+                Navigator.of(context).pop();
               },
               child: const Text('Hapus'),
             ),

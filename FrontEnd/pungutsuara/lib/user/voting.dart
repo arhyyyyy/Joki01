@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pungutsuara/user/visimisi.dart';
 
 class VotingPage extends StatefulWidget {
   const VotingPage({super.key});
@@ -9,6 +10,15 @@ class VotingPage extends StatefulWidget {
 
 class _VotingPageState extends State<VotingPage> {
   int _selectedCandidate = -1;
+
+  void _navigateToVisiMisiPage(BuildContext context, int candidateIndex) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => VisiMisiPage(candidateIndex: candidateIndex),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +41,7 @@ class _VotingPageState extends State<VotingPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.builder(
-          itemCount: 2,
+          itemCount: 2, // Jumlah kandidat
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 32.0),
@@ -69,44 +79,6 @@ class _VotingPageState extends State<VotingPage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedCandidate = index; // Set kandidat yang dipilih
-                      });
-                      // Menampilkan SnackBar untuk notifikasi "Voting Berhasil"
-                    ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                    'Voting berhasil untuk kandidat ${index + 1}', // String dinamis diperbolehkan
-                    style: const TextStyle(color: Colors.white),
-                    ),
-                  backgroundColor: Colors.green,
-                  duration: const Duration(seconds: 2),
-                      ),
-                    );
-                      print('Voted for candidate ${index + 1}');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF001A6E),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 32,
-                      ),
-                    ),
-                    child: const Text(
-                      'ARDI & GIBRAN',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
                   RadioListTile<int>(
                     value: index,
                     groupValue: _selectedCandidate,
@@ -114,11 +86,15 @@ class _VotingPageState extends State<VotingPage> {
                       setState(() {
                         _selectedCandidate = value!;
                       });
-                      print('Selected candidate ${index + 1}');
+                      _navigateToVisiMisiPage(context, index);
                     },
-                    title: const Text(
-                      'Vote',
-                      style: TextStyle(color: Color(0xFF001A6E)),
+                    title: Text(
+                      'ARDI & GIBRAN', // Nama kandidat (bisa dinamis)
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF001A6E),
+                      ),
                     ),
                     activeColor: const Color(0xFF001A6E),
                   ),

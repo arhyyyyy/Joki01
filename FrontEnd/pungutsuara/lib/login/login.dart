@@ -16,7 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
 
   bool _isObscure = true; // Status awal untuk visibilitas sandi
-  String? _selectedRole; // Untuk menyimpan jenis pengguna yang dipilih
 
   @override
   Widget build(BuildContext context) {
@@ -124,37 +123,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         style: TextStyle(color: Colors.white),
                       ),
-                      SizedBox(height: 15),
-                      DropdownButtonFormField<String>(
-                        value: _selectedRole,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Color(0xFF001A6E),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        dropdownColor: Color(0xFF001A6E),
-                        hint: Text(
-                          '-Pilih Jenis Pengguna-',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        items: ['Admin', 'User']
-                            .map((String value) => DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ))
-                            .toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedRole = newValue; // Simpan jenis pengguna yang dipilih
-                          });
-                        },
-                      ),
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
@@ -180,23 +148,25 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          if (_selectedRole == 'Admin') {
+                          final username = usernameController.text.trim();
+
+                          if (username.toLowerCase() == 'admin') {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(builder: (context) => DashboardAdmin()),
                               (route) => false,
                             );
-                          } else if (_selectedRole == 'User') {
+                          } else if (username.isNotEmpty) {
                             Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(builder: (context) => DashboardUser()), // Buat halaman user
+                              MaterialPageRoute(builder: (context) => DashboardUser()),
                               (route) => false,
                             );
                           } else {
-                            // Tampilkan pesan jika jenis pengguna belum dipilih
+                            // Tampilkan pesan jika username kosong
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Pilih jenis pengguna terlebih dahulu!'),
+                                content: Text('Masukkan Username/NIK!'),
                                 backgroundColor: Colors.red,
                               ),
                             );

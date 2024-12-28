@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
 class TambahDataKandidat extends StatelessWidget {
-  const TambahDataKandidat({super.key});
+  final Function(Map<String, String>) onAddKandidat;
+
+  TambahDataKandidat({super.key, required this.onAddKandidat});
+
+  final TextEditingController noUrutController = TextEditingController();
+  final TextEditingController namaKetuaController = TextEditingController();
+  final TextEditingController namaWakilController = TextEditingController();
+  final TextEditingController namaPartaiController = TextEditingController();
+  final TextEditingController visiMisiController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,25 +35,27 @@ class TambahDataKandidat extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 20),
-            const CustomTextField(hintText: 'No Urut'),
+            CustomTextField(controller: noUrutController, hintText: 'No Urut'),
             const SizedBox(height: 15),
-            const CustomTextField(hintText: 'Nama Ketua Kandidat'),
+            CustomTextField(controller: namaKetuaController, hintText: 'Nama Ketua Kandidat'),
             const SizedBox(height: 15),
-            const CustomTextField(hintText: 'Nama Wakil Kandidat'),
+            CustomTextField(controller: namaWakilController, hintText: 'Nama Wakil Kandidat'),
             const SizedBox(height: 15),
-            const CustomTextField(hintText: 'Nama Partai'),
+            CustomTextField(controller: namaPartaiController, hintText: 'Nama Partai'),
             const SizedBox(height: 15),
-            const CustomTextField(hintText: 'Visi & Misi'),
+            CustomTextField(controller: visiMisiController, hintText: 'Visi & Misi'),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: Colors.green,
-                    content: Text('Data berhasil ditambahkan!',
-                    ),
-                  ),
-                );
+                final newKandidat = {
+                  'noUrut': noUrutController.text,
+                  'namaKetua': namaKetuaController.text,
+                  'namaWakil': namaWakilController.text,
+                  'namaPartai': namaPartaiController.text,
+                  'visiMisi': visiMisiController.text,
+                };
+                onAddKandidat(newKandidat);
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF001A6E),
@@ -71,13 +81,15 @@ class TambahDataKandidat extends StatelessWidget {
 }
 
 class CustomTextField extends StatelessWidget {
+  final TextEditingController controller;
   final String hintText;
 
-  const CustomTextField({super.key, required this.hintText});
+  const CustomTextField({super.key, required this.controller, required this.hintText});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(color: Color(0xFF001A6E)),

@@ -1,9 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class EditDataPemilih extends StatelessWidget {
+class EditDataPemilih extends StatefulWidget {
   final int index;
+  final Map<String, String> existingData;
 
-  const EditDataPemilih({super.key, required this.index});
+  const EditDataPemilih({
+    super.key,
+    required this.index,
+    required this.existingData,
+  });
+
+  @override
+  State<EditDataPemilih> createState() => _EditDataPemilihState();
+}
+
+class _EditDataPemilihState extends State<EditDataPemilih> {
+  late TextEditingController nikController;
+  late TextEditingController ttlController;
+  late TextEditingController namaController;
+  late TextEditingController noTlpController;
+  late TextEditingController alamatController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize controllers with existing data
+    nikController = TextEditingController(text: widget.existingData['nik']);
+    ttlController = TextEditingController(text: widget.existingData['ttl']);
+    namaController = TextEditingController(text: widget.existingData['nama']);
+    noTlpController = TextEditingController(text: widget.existingData['noTlp']);
+    alamatController = TextEditingController(text: widget.existingData['alamat']);
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers to free resources
+    nikController.dispose();
+    ttlController.dispose();
+    namaController.dispose();
+    noTlpController.dispose();
+    alamatController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (pickedDate != null) {
+      setState(() {
+        ttlController.text = "${pickedDate.day}-${pickedDate.month}-${pickedDate.year}";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +72,7 @@ class EditDataPemilih extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Padding(
@@ -29,18 +81,56 @@ class EditDataPemilih extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 20),
-            const CustomTextField(hintText: 'NIK'),
+            CustomTextField(
+              controller: nikController,
+              hintText: 'NIK',
+            ),
             const SizedBox(height: 15),
-            const CustomTextField(hintText: 'DD/MM/YYYY'),
+            CustomTextField(
+              controller: ttlController,
+              hintText: 'DD-MM-YYYY',
+              isDate: true,
+              onTap: () => _selectDate(context),
+            ),
             const SizedBox(height: 15),
-            const CustomTextField(hintText: 'Nama Lengkap'),
+            CustomTextField(
+              controller: namaController,
+              hintText: 'Nama Lengkap',
+            ),
             const SizedBox(height: 15),
-            const CustomTextField(hintText: 'No. Telepon'),
+            CustomTextField(
+              controller: noTlpController,
+              hintText: 'No. Telepon',
+              isNumber: true, // Pastikan isNumber diaktifkan
+            ),
             const SizedBox(height: 15),
-            const CustomTextField(hintText: 'Alamat Lengkap'),
+            CustomTextField(
+              controller: alamatController,
+              hintText: 'Alamat Lengkap',
+            ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
+                // Validasi untuk memastikan no telepon hanya angka
+                if (!RegExp(r'^\d+$').hasMatch(noTlpController.text)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text('No. Telepon harus berupa angka saja!'),
+                    ),
+                  );
+                  return;
+                }
+
+                // Return updated data to the previous screen
+                Navigator.pop(context, {
+                  'nik': nikController.text,
+                  'ttl': ttlController.text,
+                  'nama': namaController.text,
+                  'noTlp': noTlpController.text,
+                  'alamat': alamatController.text,
+                });
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     backgroundColor: Colors.green,
@@ -72,13 +162,30 @@ class EditDataPemilih extends StatelessWidget {
 }
 
 class CustomTextField extends StatelessWidget {
+  final TextEditingController controller;
   final String hintText;
+  final bool isDate;
+  final bool isNumber; // Tambahkan flag untuk validasi angka
+  final VoidCallback? onTap;
 
-  const CustomTextField({super.key, required this.hintText});
+  const CustomTextField({
+    super.key,
+    required this.controller,
+    required this.hintText,
+    this.isDate = false,
+    this.isNumber = false, // Default false
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
+      readOnly: isDate, // Prevent typing if this is a date field
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+      inputFormatters: isNumber
+          ? [FilteringTextInputFormatter.digitsOnly] // Hanya izinkan angka
+          : null,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(color: Color(0xFF001A6E)),
@@ -90,6 +197,7 @@ class CustomTextField extends StatelessWidget {
           borderSide: BorderSide.none,
         ),
       ),
+      onTap: isDate ? onTap : null,
     );
   }
 }

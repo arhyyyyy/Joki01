@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pungutsuara/login/login.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -10,6 +11,7 @@ class ForgotPasswordPage extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -23,7 +25,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Color(0xFFE8E8E8),
+      backgroundColor: const Color(0xFFE8E8E8),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -44,7 +46,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.arrow_back,
                       color: Colors.white,
                     ),
@@ -52,7 +54,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LoginPage(),
+                          builder: (context) => const LoginPage(),
                         ),
                       );
                     },
@@ -73,14 +75,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
             ),
             SizedBox(height: screenHeight * 0.03),
             Center(
-              child: Icon(
+              child: const Icon(
                 Icons.lock,
                 size: 120,
                 color: Color(0xFF001A6E),
               ),
             ),
             SizedBox(height: screenHeight * 0.03),
-            // Description
             const Center(
               child: Text(
                 'Atur Ulang Password Anda',
@@ -92,26 +93,43 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
               ),
             ),
             SizedBox(height: screenHeight * 0.04),
-            // Form input
             Container(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Input Nama Pengguna
+                  // Input NIK
                   TextField(
                     controller: _usernameController,
                     decoration: InputDecoration(
                       hintText: 'NIK',
-                      hintStyle:
-                          TextStyle(color: Colors.grey), // Grey hint text
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
-                         borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Color(0xFF001A6E), // Fill color
+                      fillColor: const Color(0xFF001A6E),
                     ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
+                  // Input Nomor Telepon
+                  TextField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(
+                      hintText: 'No.Tlp',
+                      hintStyle: const TextStyle(color: Colors.grey),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: const Color(0xFF001A6E),
+                    ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: screenHeight * 0.02),
                   // Input Password Baru
@@ -120,13 +138,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
                       hintText: 'Password Baru',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
-                         borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Color(0xFF001A6E),
+                      fillColor: const Color(0xFF001A6E),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
@@ -141,6 +159,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
                         },
                       ),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: screenHeight * 0.02),
                   // Input Konfirmasi Password
@@ -149,13 +168,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
                     obscureText: !_isConfirmPasswordVisible,
                     decoration: InputDecoration(
                       hintText: 'Konfirmasi Password',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(
-                         borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Color(0xFF001A6E),
+                      fillColor: const Color(0xFF001A6E),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isConfirmPasswordVisible
@@ -171,6 +190,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
                         },
                       ),
                     ),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: screenHeight * 0.03),
                   // Tombol "Atur"
@@ -179,19 +199,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
                       if (_newPasswordController.text ==
                           _confirmPasswordController.text) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Password berhasil diubah')),
+                          const SnackBar(content: Text('Password berhasil diubah')),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Password tidak cocok')),
+                          const SnackBar(content: Text('Password tidak cocok')),
                         );
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF001A6E),
-                      padding: EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: const Color(0xFF001A6E),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                     ),
                     child: Text(
@@ -202,8 +222,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.04),
-                  // Teks "Kembali ke Halaman Login"
                 ],
               ),
             ),
