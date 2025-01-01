@@ -27,7 +27,7 @@ class _EditDataKandidatState extends State<EditDataKandidat> {
   void initState() {
     super.initState();
 
-    // Inisialisasi controller dengan data yang sudah ada
+    
     _noUrutController = TextEditingController(text: widget.kandidatData['noUrut']);
     _namaKetuaController = TextEditingController(text: widget.kandidatData['namaKetua']);
     _namaWakilController = TextEditingController(text: widget.kandidatData['namaWakil']);
@@ -37,13 +37,38 @@ class _EditDataKandidatState extends State<EditDataKandidat> {
 
   @override
   void dispose() {
-    // Hapus controller untuk menghindari kebocoran memori
+    
     _noUrutController.dispose();
     _namaKetuaController.dispose();
     _namaWakilController.dispose();
     _namaPartaiController.dispose();
     _visiMisiController.dispose();
     super.dispose();
+  }
+
+  void _updateData() {
+    
+    widget.onUpdate(
+      widget.index,
+      {
+        'noUrut': _noUrutController.text,
+        'namaKetua': _namaKetuaController.text,
+        'namaWakil': _namaWakilController.text,
+        'namaPartai': _namaPartaiController.text,
+        'visiMisi': _visiMisiController.text,
+      },
+    );
+
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Data berhasil diperbarui!'),
+        backgroundColor: Colors.green,
+      ),
+    );
+
+    
+    Navigator.pop(context);
   }
 
   @override
@@ -96,21 +121,7 @@ class _EditDataKandidatState extends State<EditDataKandidat> {
             ),
             const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                // Kirim data yang diperbarui ke halaman sebelumnya
-                widget.onUpdate(
-                  widget.index,
-                  {
-                    'noUrut': _noUrutController.text,
-                    'namaKetua': _namaKetuaController.text,
-                    'namaWakil': _namaWakilController.text,
-                    'namaPartai': _namaPartaiController.text,
-                    'visiMisi': _visiMisiController.text,
-                  },
-                );
-
-                Navigator.pop(context); // Kembali ke halaman sebelumnya
-              },
+              onPressed: _updateData,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF001A6E),
                 padding: const EdgeInsets.symmetric(vertical: 15),

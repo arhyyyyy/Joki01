@@ -3,6 +3,7 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services" // Plugin untuk Firebase
 }
 
 android {
@@ -16,29 +17,37 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = "1.8"
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.pungutsuara"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Tambahkan konfigurasi untuk Firebase Authentication
+        multiDexEnabled true // Diperlukan jika menggunakan lebih dari 64K metode
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    dependencies {
+        implementation platform('com.google.firebase:firebase-bom:32.1.0') // Versi Firebase BOM
+        implementation 'com.google.firebase:firebase-auth' // Firebase Authentication
     }
 }
 
 flutter {
     source = "../.."
 }
+
+// Tambahkan ini di bagian akhir file
+apply plugin: 'com.google.gms.google-services'

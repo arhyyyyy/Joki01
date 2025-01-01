@@ -90,7 +90,7 @@ class _KelolaKandidatPageState extends State<KelolaKandidatPage> {
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
                   columnSpacing: 20,
-                  headingRowColor: MaterialStateProperty.resolveWith(
+                  headingRowColor: WidgetStateProperty.resolveWith(
                     (states) => const Color(0xFF001A6E),
                   ),
                   headingTextStyle: const TextStyle(
